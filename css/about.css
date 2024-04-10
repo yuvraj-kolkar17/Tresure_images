@@ -1,0 +1,136 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body {
+  background-color: #f5f5f5;
+}
+.about {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: justify;
+}
+
+.about h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.about p{
+  opacity: 0; /* Initially set paragraphs to invisible */
+  font-size: 1.1rem;
+  line-height: 1.5;
+  transition: opacity 1s ease-in-out;
+}
+.about p.visible { /* Add a class for visibility */
+  opacity: 1; /* Make paragraph visible */
+}
+.about h3.visible { /* Add a class for visibility */
+  opacity: 1; /* Make paragraph visible */
+}
+.about h3 {
+  font-size: 1.2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.slide-in-text {
+  animation: slide-in 2s ease-in-out forwards;
+  display: inline-block;
+  white-space: nowrap;
+  margin-left: -100%; /* Positions the text off-screen to the left initially */
+}
+
+
+@keyframes slide-in {
+  from { margin-left: -100%; }
+  to { margin-left: 0; }
+}
+
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 2em 1em;
+  text-align: center;
+}
+.column {
+  width: 100%;
+  padding: 0.5em 0;
+}
+h1 {
+  width: 100%;
+  text-align: center;
+  font-size: 3.5em;
+  color: #1f003b;
+}
+.card {
+  box-shadow: 0 0 2.4em rgba(25, 0, 58, 0.1);
+  padding: 3.5em 1em;
+  border-radius: 0.6em;
+  color: #1f003b;
+  cursor: pointer;
+  transition: 0.3s;
+  background-color: #ffffff;
+}
+.card .img-container {
+  width: 8em;
+  height: 8em;
+  background-color: #a993ff;
+  padding: 0.5em;
+  border-radius: 0%;
+  margin: 0 auto 2em auto;
+}
+.card img {
+  width: 100%;
+  border-radius: 0%;
+}
+.card h3 {
+  font-weight: 500;
+}
+.card p {
+  font-weight: 300;
+  text-transform: uppercase;
+  margin: 0.5em 0 2em 0;
+  letter-spacing: 2px;
+}
+.icons {
+  width: 50%;
+  min-width: 180px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+}
+.card a {
+  text-decoration: none;
+  color: inherit;
+  font-size: 1.4em;
+}
+.card:hover {
+  background: linear-gradient(#6045ea, #8567f7);
+  color: #ffffff;
+}
+.card:hover .img-container {
+  transform: scale(1.15);
+}
+@media screen and (min-width: 768px) {
+  section {
+    padding: 1em 7em;
+  }
+}
+@media screen and (min-width: 992px) {
+  section {
+    padding: 1em;
+  }
+  .card {
+    padding: 5em 1em;
+  }
+  .column {
+    flex: 0 0 33.33%;
+    max-width: 33.33%;
+    padding: 0 1em;
+  }
+}

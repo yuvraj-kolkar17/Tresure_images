@@ -1,0 +1,48 @@
+ /* Styling for the slide-in menu */
+ .menu {
+    position: fixed; /* Makes the menu fixed on the screen */
+    top: 50px;
+    left: -100%; /* Initially hidden off-screen to the left */
+    width: 200px; /* Adjust the width of the menu */
+    height: 100vh; /* Full viewport height */
+    background-color: #a6b2da49; /* Change background color as desired */
+    transition: all 0.3s ease-in-out; /* Animation for sliding */
+    z-index: 2;
+  }
+
+  .menu.open {
+    left: 0; /* Slides the menu in when open */
+  }
+
+  .menu a {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: black;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .menu a:hover {
+    background-color: #ddd; /* Change hover color as desired */
+  }
+
+  .menu-toggle {
+    position: sticky;
+    display:inline-block;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .menu-toggle i {
+    font-size: 20px;
+  }
+
+  .logo {
+    position: sticky;
+    margin-top:5px;
+    padding: 10px;
+    width: 180px; /* Adjust as needed */
+    height: 40px;
+    float: right; /* Place logo on the right */
+  }
