@@ -8,124 +8,104 @@ const menu = document.querySelector('.menu');
 const menuToggle = document.querySelector('.menu-toggle');
 const categorySelect = document.querySelector(".category-select");
 
-const apiKey = "Db7lo1Bu6oYUfBeGql3fSQW30hfOecVSuSoE0l3T2Xqmc8tZRAgXdV7z"; 
-const perPage = 20;
+// API key, paginations, searchTerm variables
+const apiKey = "Db7lo1Bu6oYUfBeGql3fSQW30hfOecVSuSoE0l3T2Xqmc8tZRAgXdV7z";
+const perPage = 15;
 let currentPage = 1;
 let searchTerm = "";
 let selectedCategory = "";
-let currentApiUrl = "";
 
-const downloadImage = async (imgUrl) => {
-    try {
-        const response = await fetch(imgUrl);
-        if (!response.ok) {
-            throw new Error('Failed to download image');
-        }
-        const blob = await response.blob();
+const downloadImg = (imgUrl) => {
+    // Converting received img to blob, creating its download link, & downloading it
+    fetch(imgUrl).then(res => res.blob()).then(blob => {
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
         a.download = new Date().getTime();
         a.click();
-    } catch (error) {
-        console.error(error.message);
-        alert("Failed to download image!");
-    }
+    }).catch(() => alert("Failed to download image!"));
 }
 
 const showLightbox = (name, img) => {
+    // Showing lightbox and setting img source, name and button attribute
     lightbox.querySelector("img").src = img;
     lightbox.querySelector("span").innerText = name;
-    downloadImgBtn.dataset.img = img;
+    downloadImgBtn.setAttribute("data-img", img);
     lightbox.classList.add("show");
     document.body.style.overflow = "hidden";
 }
 
 const hideLightbox = () => {
+    // Hiding lightbox on close icon click
     lightbox.classList.remove("show");
     document.body.style.overflow = "auto";
 }
 
-const generateImageHTML = (img) => {
-    return `<li class="card">
-                <img src="${img.src.large2x}" alt="${img.photographer}">
-                <div class="details">
-                    <div class="photographer">
-                        <i class="uil uil-camera"></i>
-                        <span>${img.photographer}</span>
-                    </div>
-                    <button class="download-btn" data-src="${img.src.large2x}">
-                        <i class="uil uil-import"></i>
-                    </button>
+const generateHTML = (images) => {
+    // Making li of all fetched images and adding them to the existing image wrapper
+    imageWrapper.innerHTML += images.map(img =>
+        `<li class="card">
+            <img onclick="showLightbox('${img.photographer}', '${img.src.large2x}')" src="${img.src.large2x}" alt="img">
+            <div class="details">
+                <div class="photographer">
+                    <i class="uil uil-camera"></i>
+                    <span>${img.photographer}</span>
                 </div>
-            </li>`;
+                <button onclick="downloadImg('${img.src.large2x}');">
+                    <i class="uil uil-import"></i>
+                </button>
+            </div>
+        </li>`
+    ).join("");
 }
 
-const appendImagesToGallery = (images) => {
-    const html = images.map(generateImageHTML).join('');
-    imageWrapper.insertAdjacentHTML('beforeEnd', html);
-}
-
-const fetchImages = async (url) => {
-    try {
-        const response = await fetch(url, {
-            headers: { Authorization: apiKey }
-        });
-        if (!response.ok) {
-            throw new Error('Failed to fetch images');
-        }
-        const data = await response.json();
-        appendImagesToGallery(data.photos);
+const getImages = (apiURL) => {
+    // Fetching images by API call with authorization header
+    searchInput.blur();
+    loadMoreBtn.innerText = "Loading...";
+    loadMoreBtn.classList.add("disabled");
+    fetch(apiURL, {
+        headers: { Authorization: apiKey }
+    }).then(res => res.json()).then(data => {
+        generateHTML(data.photos);
         loadMoreBtn.innerText = "Load More";
         loadMoreBtn.classList.remove("disabled");
-    } catch (error) {
-        console.error(error.message);
-        alert("Failed to load images!");
-    }
+    }).catch(() => alert("Failed to load images!"));
 }
 
 const loadMoreImages = () => {
-    currentPage++;
-    const apiUrl = currentApiUrl + `&page=${currentPage}`;
-    fetchImages(apiUrl);
+    currentPage++; // Increment currentPage by 1
+    // If searchTerm has some value then call API with search term else call default API
+    let apiUrl = `https://api.pexels.com/v1/curated?page=${currentPage}&per_page=${perPage}`;
+    apiUrl = searchTerm ? `https://api.pexels.com/v1/search?query=${searchTerm}&page=${currentPage}&per_page=${perPage}` : apiUrl;
+    getImages(apiUrl);
 }
 
-const searchImages = (e) => {
-    
-    if (e.key=== "Enter") {
-        
-        searchTerm = e.target.value.trim();
+const loadSearchImages = (e) => {
+    // If the search input is empty, set the search term to null and return from here
+    if (e.target.value === "") return searchTerm = "null";
+    // If pressed key is Enter, update the current page, search term & call the getImages
+    if (e.key === "Enter") {
         currentPage = 1;
+        searchTerm = e.target.value;
         imageWrapper.innerHTML = "";
-        const apiUrl = searchTerm ? `https://api.pexels.com/v1/search?query=${searchTerm}&per_page=${perPage}` : `https://api.pexels.com/v1/curated?per_page=${perPage}`;
-        currentApiUrl = apiUrl;
-        fetchImages(apiUrl);
+        getImages(`https://api.pexels.com/v1/search?query=${searchTerm}&page=1&per_page=${perPage}`);
     }
 }
 
 menuToggle.addEventListener('click', () => {
-    menu.classList.toggle('open');
-});
+    menu.classList.toggle('open'); /* Toggle the open class on click */
+  });
 
+
+getImages(`https://api.pexels.com/v1/curated?page=${currentPage}&per_page=${perPage}`);
 loadMoreBtn.addEventListener("click", loadMoreImages);
-searchInput.addEventListener("keyup", searchImages);
+searchInput.addEventListener("keyup", loadSearchImages);
 closeImgBtn.addEventListener("click", hideLightbox);
-downloadImgBtn.addEventListener("click", () => downloadImage(downloadImgBtn.dataset.img));
+downloadImgBtn.addEventListener("click", (e) => downloadImg(e.target.dataset.img));
 
 categorySelect.addEventListener("change", () => {
     selectedCategory = categorySelect.value;
     currentPage = 1;
-    searchTerm = selectedCategory;
-    imageWrapper.innerHTML = "";
-    const apiUrl = `https://api.pexels.com/v1/search?query=${selectedCategory}&per_page=${perPage}`;
-    currentApiUrl = apiUrl;
-    fetchImages(apiUrl);
+    imageWrapper.innerHTML = ""; // Clear images
+    getImages(`https://api.pexels.com/v1/search?query=${selectedCategory}&page=${currentPage}&per_page=${perPage}`);
 });
-
-// Initial load
-const initialApiUrl = `https://api.pexels.com/v1/curated?per_page=${perPage}`;
-currentApiUrl = initialApiUrl;
-fetchImages(initialApiUrl);
-
-
-
-
