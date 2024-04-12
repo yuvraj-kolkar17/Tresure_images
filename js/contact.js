@@ -48,7 +48,7 @@ form.addEventListener('submit', (event) => {
 }).then(
   message => alert("Feedback Submited Successfully")
 ).catch(
-    alert("error")
+   
     );
   }
 });
