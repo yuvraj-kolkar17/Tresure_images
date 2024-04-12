@@ -41,10 +41,10 @@ form.addEventListener('submit', (event) => {
 
       Email.send({
     SecureToken : "ca9ce12b-320a-49db-8d3b-84bf06292149",
-    To : 'udes251@gmail.com', 
+    To : 'udes251@gmail.com,kolkaryuvraj2@gmail.com', 
     From : "udes251@gmail.com",
     Subject : subject,
-    Body : ""
+    Body : body
 }).then(
   message => alert("Feedback Submited Successfully")
 ).catch(
