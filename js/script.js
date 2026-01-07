@@ -9,7 +9,7 @@ const menuToggle = document.querySelector('.menu-toggle');
 const categorySelect = document.querySelector(".category-select");
 
 // API key, paginations, searchTerm variables
-const apiKey = "Db7lo1Bu6oYUfBeGql3fSQW30hfOecVSuSoE0l3T2Xqmc8tZRAgXdV7z";
+const API_KEY = process.env.API_KEY;
 const perPage = 15;
 let currentPage = 1;
 let searchTerm = "";
